@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoadChain — Verification, Not Speculation</title>
+    <meta name="description" content="RoadChain: Ethereum-based verification infrastructure for smart contracts, consent management, audit trails, and zero-knowledge proofs. Built by BlackRoad OS.">
+    <meta name="keywords" content="blockchain, verification, smart contracts, zero-knowledge proofs, consent management, audit trails, Ethereum, BlackRoad">
+    <meta property="og:title" content="RoadChain — Verification, Not Speculation">
+    <meta property="og:description" content="Ethereum-based verification infrastructure. Smart contracts, consent management, audit trails, and zero-knowledge proofs.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://roadchain.blackroad.io">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #000;
+            --surface: #0a0a0a;
+            --border: #1a1a1a;
+            --text: #e0e0e0;
+            --text-muted: #888;
+            --gradient: linear-gradient(90deg, #FF6B2B, #FF2255, #CC00AA, #8844FF, #4488FF, #00D4FF);
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-heading);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .gradient-text {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-line {
+            height: 2px;
+            background: var(--gradient);
+            border: none;
+        }
+
+        .gradient-border {
+            position: relative;
+        }
+
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            padding: 1px;
+            background: var(--gradient);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            border-radius: inherit;
+            pointer-events: none;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-logo {
+            font-family: var(--font-mono);
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .nav-cta {
+            padding: 0.5rem 1.5rem;
+            background: var(--gradient);
+            border: none;
+            border-radius: 6px;
+            color: #000;
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .nav-cta:hover {
+            opacity: 0.9;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 8rem 2rem 4rem;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.4rem 1.2rem;
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 7vw, 5.5rem);
+            font-weight: 700;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            max-width: 900px;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2vw, 1.35rem);
+            color: var(--text-muted);
+            max-width: 650px;
+            margin-bottom: 3rem;
+            line-height: 1.7;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            padding: 0.85rem 2.5rem;
+            background: var(--gradient);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: opacity 0.3s, transform 0.2s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            padding: 0.85rem 2.5rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: var(--font-heading);
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: border-color 0.3s, transform 0.2s;
+        }
+
+        .btn-secondary:hover {
+            border-color: #444;
+            transform: translateY(-1px);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 4rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-value {
+            font-family: var(--font-mono);
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .hero-stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Grid Background */
+        .grid-bg {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        /* Sections */
+        section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+            line-height: 1.15;
+        }
+
+        .section-description {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 650px;
+            margin-bottom: 3rem;
+            line-height: 1.7;
+        }
+
+        /* Feature Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: border-color 0.3s;
+        }
+
+        .card:hover {
+            border-color: #333;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient);
+            border-radius: 10px;
+            margin-bottom: 1.25rem;
+            font-size: 1.4rem;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.01em;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Architecture Section */
+        .architecture-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .architecture-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .arch-diagram {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+            overflow-x: auto;
+        }
+
+        .arch-diagram .highlight {
+            color: #FF6B2B;
+        }
+
+        .arch-diagram .highlight-blue {
+            color: #4488FF;
+        }
+
+        .arch-diagram .highlight-pink {
+            color: #FF2255;
+        }
+
+        .arch-diagram .highlight-violet {
+            color: #8844FF;
+        }
+
+        .arch-diagram .highlight-cyan {
+            color: #00D4FF;
+        }
+
+        .arch-details h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .arch-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .arch-list li {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .arch-list-marker {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--gradient);
+            flex-shrink: 0;
+            margin-top: 0.5rem;
+        }
+
+        .arch-list-content strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .arch-list-content span {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .code-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .code-dot-red { background: #ff5f56; }
+        .code-dot-yellow { background: #ffbd2e; }
+        .code-dot-green { background: #27c93f; }
+
+        .code-body {
+            padding: 1.25rem;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            line-height: 1.8;
+            overflow-x: auto;
+            color: var(--text-muted);
+        }
+
+        .code-body .keyword { color: #CC00AA; }
+        .code-body .string { color: #00D4FF; }
+        .code-body .function { color: #FF6B2B; }
+        .code-body .comment { color: #555; }
+        .code-body .type { color: #8844FF; }
+        .code-body .number { color: #FF2255; }
+
+        /* Smart Contracts Section */
+        .contracts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .contract-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.75rem;
+            transition: border-color 0.3s;
+        }
+
+        .contract-card:hover {
+            border-color: #333;
+        }
+
+        .contract-name {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: #FF6B2B;
+            margin-bottom: 0.5rem;
+        }
+
+        .contract-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .contract-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .contract-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .contract-tag {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            padding: 0.25rem 0.6rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-muted);
+        }
+
+        /* Compliance Section */
+        .compliance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .compliance-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        .compliance-card:hover {
+            border-color: #333;
+        }
+
+        .compliance-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .compliance-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .compliance-card p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .compliance-badge {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.3rem 0.8rem;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            border-radius: 4px;
+            background: rgba(39, 201, 63, 0.1);
+            color: #27c93f;
+            border: 1px solid rgba(39, 201, 63, 0.2);
+        }
+
+        /* ZKP Section */
+        .zkp-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .zkp-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .zkp-visual {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .zkp-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .zkp-node {
+            padding: 0.75rem 2rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            width: 100%;
+            max-width: 280px;
+            text-align: center;
+        }
+
+        .zkp-arrow {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+
+        .zkp-node-active {
+            border-color: #FF6B2B;
+            color: #FF6B2B;
+        }
+
+        .zkp-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .zkp-content p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .zkp-features {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .zkp-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .zkp-features li::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #00D4FF;
+            flex-shrink: 0;
+        }
+
+        /* Audit Trail Section */
+        .audit-timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .audit-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gradient);
+        }
+
+        .audit-entry {
+            position: relative;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-left: 1.5rem;
+        }
+
+        .audit-entry::before {
+            content: '';
+            position: absolute;
+            left: -2.05rem;
+            top: 1.75rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--gradient);
+        }
+
+        .audit-timestamp {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .audit-action {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .audit-detail {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .audit-hash {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: #8844FF;
+            margin-top: 0.5rem;
+        }
+
+        /* Consent Management */
+        .consent-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .consent-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .consent-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: border-color 0.3s;
+        }
+
+        .consent-card:hover {
+            border-color: #333;
+        }
+
+        .consent-step {
+            font-family: var(--font-mono);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .consent-card h3 {
+            font-size: 1.15rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .consent-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Network Section */
+        .network-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .network-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .net-stat {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .net-stat-value {
+            font-family: var(--font-mono);
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .net-stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Pricing */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .pricing-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2.5rem;
+            position: relative;
+            transition: border-color 0.3s;
+        }
+
+        .pricing-card:hover {
+            border-color: #333;
+        }
+
+        .pricing-card.featured {
+            border-color: #444;
+        }
+
+        .pricing-card.featured::after {
+            content: 'MOST POPULAR';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.3rem 1rem;
+            background: var(--gradient);
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #000;
+            letter-spacing: 0.05em;
+        }
+
+        .pricing-tier {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .pricing-period {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features li {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .pricing-features li::before {
+            content: '+';
+            font-family: var(--font-mono);
+            color: #27c93f;
+            font-weight: 700;
+        }
+
+        .pricing-btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            text-align: center;
+            border-radius: 8px;
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .pricing-btn-primary {
+            background: var(--gradient);
+            color: #000;
+            border: none;
+        }
+
+        .pricing-btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        /* Integration Section */
+        .integration-logos {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .integration-logo {
+            padding: 1rem 2rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            transition: border-color 0.3s;
+        }
+
+        .integration-logo:hover {
+            border-color: #333;
+        }
+
+        /* API Reference */
+        .api-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .api-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: border-color 0.3s;
+        }
+
+        .api-card:hover {
+            border-color: #333;
+        }
+
+        .api-method {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-right: 0.5rem;
+        }
+
+        .api-get { background: rgba(39, 201, 63, 0.1); color: #27c93f; }
+        .api-post { background: rgba(68, 136, 255, 0.1); color: #4488FF; }
+        .api-put { background: rgba(255, 107, 43, 0.1); color: #FF6B2B; }
+
+        .api-endpoint {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text);
+        }
+
+        .api-desc {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 8rem 2rem;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 550px;
+            margin: 0 auto 2.5rem;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .footer-brand {
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand-desc {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .footer-col h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        .footer-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .footer-col a {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            transition: color 0.3s;
+        }
+
+        .footer-col a:hover {
+            color: var(--text);
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-bottom-links a {
+            color: var(--text-muted);
+            transition: color 0.3s;
+        }
+
+        .footer-bottom-links a:hover {
+            color: var(--text);
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-stats {
+                gap: 2rem;
+            }
+
+            .network-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .consent-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <a href="#" class="nav-logo"><span class="gradient-text">RoadChain</span></a>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+            <li><a href="#contracts">Contracts</a></li>
+            <li><a href="#compliance">Compliance</a></li>
+            <li><a href="#zkp">ZKP</a></li>
+            <li><a href="#api">API</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+        </ul>
+        <button class="nav-cta">Get Started</button>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="grid-bg"></div>
+        <span class="hero-badge">Ethereum-Based Verification Infrastructure</span>
+        <h1><span class="gradient-text">Verification,</span><br>Not Speculation.</h1>
+        <p class="hero-subtitle">RoadChain is verification infrastructure built for the real world. Smart contracts for consent management, immutable audit trails, and zero-knowledge proofs &mdash; all on Ethereum with sovereign deployment options.</p>
+        <div class="hero-actions">
+            <button class="btn-primary">Deploy a Node</button>
+            <button class="btn-secondary">Read Documentation</button>
+        </div>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="hero-stat-value gradient-text">&lt;2s</div>
+                <div class="hero-stat-label">Block Finality</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value gradient-text">12</div>
+                <div class="hero-stat-label">Smart Contracts</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value gradient-text">100%</div>
+                <div class="hero-stat-label">On-Chain Audit</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value gradient-text">ZK</div>
+                <div class="hero-stat-label">Privacy Layer</div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="gradient-line">
+
+    <!-- Features -->
+    <section id="features">
+        <div class="section-label">Core Capabilities</div>
+        <h2 class="section-title">Built for Verification,<br><span class="gradient-text">Not Trading</span></h2>
+        <p class="section-description">RoadChain is not a cryptocurrency. It is verification infrastructure &mdash; a system that proves things happened, that consent was given, that data was not tampered with.</p>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon">&#x1F4DC;</div>
+                <h3>Smart Contract Engine</h3>
+                <p>Solidity-based contracts deployed to a private Ethereum network. Consent, identity, audit, and compliance contracts ship out of the box. Extend with your own business logic using standard EVM tooling.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">&#x1F512;</div>
+                <h3>Consent Management</h3>
+                <p>On-chain consent records with granular permissions. Users grant, revoke, and audit access to their data with cryptographic proof. Every consent event is timestamped and immutable.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">&#x1F4CB;</div>
+                <h3>Immutable Audit Trails</h3>
+                <p>Every action produces a verifiable audit entry. Chain of custody for documents, regulatory submissions, compliance events &mdash; all cryptographically linked and tamper-evident.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">&#x1F6E1;</div>
+                <h3>Zero-Knowledge Proofs</h3>
+                <p>Prove statements about data without revealing the data itself. Age verification without birthdate. Balance verification without amount. Membership proof without identity disclosure.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">&#x1F310;</div>
+                <h3>Sovereign Deployment</h3>
+                <p>Run your own RoadChain node on any hardware. No dependency on public chains or third-party validators. Your verification infrastructure, your rules, your network.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">&#x26A1;</div>
+                <h3>JSON-RPC Interface</h3>
+                <p>Standard Ethereum JSON-RPC on port 8545. Compatible with MetaMask, ethers.js, web3.py, Hardhat, Foundry, and every tool in the Ethereum ecosystem.</p>
+            </div>
+        </div>
+    </section>
+
+    <hr class="gradient-line">
+
+    <!-- Architecture -->
+    <section id="architecture">
+        <div class="section-label">Technical Architecture</div>
+        <h2 class="section-title">Ethereum Under the Hood,<br><span class="gradient-text">Verification on Top</span></h2>
+        <div class="architecture-container">
+            <div class="arch-diagram">
+<pre>
+<span class="highlight">+------------------------------------------+</span>
+<span class="highlight">|           APPLICATION LAYER               |</span>
+<span class="highlight">+------------------------------------------+</span>
+|  Consent Manager  |  Audit Logger        |
+|  Identity Oracle  |  ZKP Verifier        |
+|  Compliance Gate  |  Document Registry   |
+<span class="highlight-blue">+------------------------------------------+</span>
+<span class="highlight-blue">|            SMART CONTRACT LAYER           |</span>
+<span class="highlight-blue">+------------------------------------------+</span>
+|  Solidity 0.8.x  |  OpenZeppelin Base   |
+|  Custom Events    |  Access Control      |
+|  Upgradeable Proxy|  Multi-Sig Governance|
+<span class="highlight-pink">+------------------------------------------+</span>
+<span class="highlight-pink">|             CONSENSUS LAYER               |</span>
+<span class="highlight-pink">+------------------------------------------+</span>
+|  Proof of Authority (Clique)             |
+|  2-second block time | &lt;100ms finality   |
+|  Permissioned validators only            |
+<span class="highlight-violet">+------------------------------------------+</span>
+<span class="highlight-violet">|              NETWORK LAYER                |</span>
+<span class="highlight-violet">+------------------------------------------+</span>
+|  JSON-RPC :8545   |  WebSocket :8546     |
+|  GraphQL :8547    |  P2P Discovery       |
+|  WireGuard mesh   |  Tor hidden service  |
+<span class="highlight-cyan">+------------------------------------------+</span>
+<span class="highlight-cyan">|              STORAGE LAYER                |</span>
+<span class="highlight-cyan">+------------------------------------------+</span>
+|  LevelDB state    |  IPFS documents      |
+|  PostgreSQL index |  MinIO attachments   |
++------------------------------------------+
+</pre>
+            </div>
+            <div class="arch-details">
+                <h3>Layer-by-Layer</h3>
+                <ul class="arch-list">
+                    <li>
+                        <div class="arch-list-marker"></div>
+                        <div class="arch-list-content">
+                            <strong>Application Layer</strong>
+                            <span>High-level services that consume smart contract data. REST APIs, webhooks, real-time event streams, and admin dashboards.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="arch-list-marker"></div>
+                        <div class="arch-list-content">
+                            <strong>Smart Contract Layer</strong>
+                            <span>Solidity 0.8.x contracts with OpenZeppelin security patterns. Upgradeable proxies for zero-downtime contract updates. Multi-signature governance for critical operations.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="arch-list-marker"></div>
+                        <div class="arch-list-content">
+                            <strong>Consensus Layer</strong>
+                            <span>Proof of Authority (Clique) consensus. Known validators only. 2-second block time with sub-100ms transaction finality. No mining, no gas fees, no speculation.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="arch-list-marker"></div>
+                        <div class="arch-list-content">
+                            <strong>Network Layer</strong>
+                            <span>Standard JSON-RPC on :8545. WebSocket subscriptions on :8546. Nodes communicate over WireGuard mesh or Tor hidden services for maximum privacy.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="arch-list-marker"></div>
+                        <div class="arch-list-content">
+                            <strong>Storage Layer</strong>
+                            <span>LevelDB for chain state, PostgreSQL for indexed queries, IPFS for document storage, MinIO for binary attachments. Every layer is self-hosted.</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Code Example -->
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+                <span style="margin-left: 0.5rem;">ConsentManager.sol</span>
+            </div>
+            <div class="code-body">
+<pre><span class="comment">// SPDX-License-Identifier: PROPRIETARY</span>
+<span class="keyword">pragma</span> solidity ^0.8.19;
+
+<span class="keyword">import</span> <span class="string">"@openzeppelin/contracts/access/AccessControl.sol"</span>;
+<span class="keyword">import</span> <span class="string">"@openzeppelin/contracts/security/ReentrancyGuard.sol"</span>;
+
+<span class="keyword">contract</span> <span class="type">ConsentManager</span> <span class="keyword">is</span> AccessControl, ReentrancyGuard {
+    <span class="keyword">bytes32</span> <span class="keyword">public constant</span> AUDITOR_ROLE = <span class="function">keccak256</span>(<span class="string">"AUDITOR_ROLE"</span>);
+
+    <span class="keyword">struct</span> <span class="type">ConsentRecord</span> {
+        <span class="keyword">address</span> subject;
+        <span class="keyword">address</span> controller;
+        <span class="keyword">bytes32</span> purposeHash;
+        <span class="keyword">uint256</span> grantedAt;
+        <span class="keyword">uint256</span> expiresAt;
+        <span class="keyword">bool</span>    revoked;
+    }
+
+    <span class="keyword">mapping</span>(<span class="keyword">bytes32</span> => <span class="type">ConsentRecord</span>) <span class="keyword">public</span> consents;
+    <span class="keyword">mapping</span>(<span class="keyword">address</span> => <span class="keyword">bytes32</span>[]) <span class="keyword">public</span> subjectConsents;
+
+    <span class="keyword">event</span> <span class="function">ConsentGranted</span>(<span class="keyword">bytes32 indexed</span> consentId, <span class="keyword">address indexed</span> subject, <span class="keyword">bytes32</span> purposeHash);
+    <span class="keyword">event</span> <span class="function">ConsentRevoked</span>(<span class="keyword">bytes32 indexed</span> consentId, <span class="keyword">address indexed</span> subject, <span class="keyword">uint256</span> revokedAt);
+
+    <span class="keyword">function</span> <span class="function">grantConsent</span>(
+        <span class="keyword">address</span> controller,
+        <span class="keyword">bytes32</span> purposeHash,
+        <span class="keyword">uint256</span> duration
+    ) <span class="keyword">external nonReentrant returns</span> (<span class="keyword">bytes32</span>) {
+        <span class="keyword">bytes32</span> consentId = <span class="function">keccak256</span>(<span class="function">abi.encodePacked</span>(
+            msg.sender, controller, purposeHash, block.timestamp
+        ));
+
+        consents[consentId] = <span class="type">ConsentRecord</span>({
+            subject: msg.sender,
+            controller: controller,
+            purposeHash: purposeHash,
+            grantedAt: block.timestamp,
+            expiresAt: block.timestamp + duration,
+            revoked: <span class="keyword">false</span>
+        });
+
+        subjectConsents[msg.sender].<span class="function">push</span>(consentId);
+        <span class="keyword">emit</span> <span class="function">ConsentGranted</span>(consentId, msg.sender, purposeHash);
+        <span class="keyword">return</span> consentId;
+    }
+
+    <span class="keyword">function</span> <span class="function">revokeConsent</span>(<span class="keyword">bytes32</span> consentId) <span class="keyword">external</span> {
+        <span class="keyword">require</span>(consents[consentId].subject == msg.sender, <span class="string">"Not subject"</span>);
+        consents[consentId].revoked = <span class="keyword">true</span>;
+        <span class="keyword">emit</span> <span class="function">ConsentRevoked</span>(consentId, msg.sender, block.timestamp);
+    }
+
+    <span class="keyword">function</span> <span class="function">isConsentValid</span>(<span class="keyword">bytes32</span> consentId) <span class="keyword">external view returns</span> (<span class="keyword">bool</span>) {
+        <span class="type">ConsentRecord</span> <span class="keyword">storage</span> c = consents[consentId];
+        <span class="keyword">return</span> !c.revoked && block.timestamp &lt;= c.expiresAt;
+    }
+}</pre>
+            </div>
+        </div>
+    </section>
+
+    <hr class="gradient-line">
+
+    <!-- Smart Contracts -->
+    <section id="contracts">
+        <div class="section-label">Contract Suite</div>
+        <h2 class="section-title">12 Production Contracts,<br><span class="gradient-text">Zero Speculation</span></h2>
+        <p class="section-description">Every contract is audited, tested, and deployed with upgradeable proxy patterns. No tokens, no ICOs, no financial instruments.</p>
+        <div class="contracts-grid">
+            <div class="contract-card">
+                <div class="contract-name">ConsentManager.sol</div>
+                <h3>Consent Management</h3>
+                <p>Grant, revoke, and verify data processing consent with cryptographic proof. GDPR-compliant consent lifecycle management on-chain.</p>
+                <div class="contract-meta">
+                    <span class="contract-tag">Solidity 0.8.19</span>
+                    <span class="contract-tag">AccessControl</span>
+                    <span class="contract-tag">Events</span>
+                </div>
+            </div>
+            <div class="contract-card">
+                <div class="contract-name">AuditTrail.sol</div>
+                <h3>Immutable Audit Log</h3>
+                <p>Append-only audit entries with Merkle proofs. Every action is hashed, timestamped, and linked to the previous entry for tamper detection.</p>
+                <div class="contract-meta">
+                    <span class="contract-tag">MerkleProof</span>
+                    <span class="contract-tag">Append-Only</span>
+                    <span class="contract-tag">Indexed</span>
+                </div>
+            </div>
+            <div class="contract-card">
+                <div class="contract-name">IdentityOracle.sol</div>
+                <h3>Decentralized Identity</h3>
+                <p>Self-sovereign identity verification. Users control their identity claims. Verifiers check claims without accessing underlying data.</p>
+                <div class="contract-meta">
+                    <span class="contract-tag">DID:road</span>
+                    <span class="contract-tag">Verifiable Credentials</span>
+                </div>
+            </div>
+            <div class="contract-card">
+                <div class="contract-name">ComplianceGate.sol</div>
+                <h3>Regulatory Compliance</h3>
+                <p>Programmable compliance rules. KYC/AML checks, geographic restrictions, and regulatory holds enforced at the contract level.</p>
+                <div class="contract-meta">
+                    <span class="contract-tag">KYC/AML</span>
+                    <span class="contract-tag">Geo-Fence</span>
+                    <span class="contract-tag">Holds</span>
+                </div>
+            </div>
+            <div class="contract-card">
+                <div class="contract-name">DocumentRegistry.sol</div>
+                <h3>Document Verification</h3>
+                <p>Register document hashes on-chain. Verify authenticity, provenance, and version history. Integrates with IPFS for decentralized storage.</p>
+                <div class="contract-meta">
+                    <span class="contract-tag">SHA-256</span>
+                    <span class="contract-tag">IPFS CID</span>
+                    <span class="contract-tag">Versioning</span>
+                </div>
+            </div>
+            <div class="contract-card">
+                <div class="contract-name">ZKVerifier.sol</div>
+                <h3>ZK Proof Verification</h3>
+                <p>On-chain verification of zero-knowledge proofs. Groth16 and PLONK support. Verify age, balance, membership without data exposure.</p>
+                <div class="contract-meta">
+                    <span class="contract-tag">Groth16</span>
+                    <span class="contract-tag">PLONK</span>
+                    <span class="contract-tag">Circom</span>
+                </div>
+            </div>
+            <div class="contract-card">
+                <div class="contract-name">MultiSigGovernance.sol</div>
+                <h3>Governance</h3>
+                <p>Multi-signature governance for critical operations. Contract upgrades, validator additions, and parameter changes require M-of-N approval.</p>
+                <div class="contract-meta">
+                    <span class="contract-tag">M-of-N</span>
+                    <span class="contract-tag">Timelock</span>
+                    <span class="contract-tag">Proposals</span>
+                </div>
+            </div>
+            <div class="contract-card">
+                <div class="contract-name">AccessRegistry.sol</div>
+                <h3>Access Control</h3>
+                <p>Role-based access control with hierarchical permissions. Grant, revoke, and delegate access rights with full audit trail.</p>
+                <div class="contract-meta">
+                    <span class="contract-tag">RBAC</span>
+                    <span class="contract-tag">Delegation</span>
+                    <span class="contract-tag">Hierarchy</span>
+                </div>
+            </div>
+            <div class="contract-card">
+                <div class="contract-name">TimeLock.sol</div>
+                <h3>Time-Locked Operations</h3>
+                <p>Delay critical operations with configurable timelock periods. Emergency cancel with multi-sig. Transparent execution queue.</p>
+                <div class="contract-meta">
+                    <span class="contract-tag">24h Minimum</span>
+                    <span class="contract-tag">Queue</span>
+                    <span class="contract-tag">Cancel</span>
+                </div>
+            </div>
+            <div class="contract-card">
+                <div class="contract-name">DataVault.sol</div>
+                <h3>Encrypted Data Vault</h3>
+                <p>Store encrypted data references on-chain. Key management with threshold encryption. Data owners control decryption access.</p>
+                <div class="contract-meta">
+                    <span class="contract-tag">AES-256</span>
+                    <span class="contract-tag">Threshold</span>
+                    <span class="contract-tag">ECIES</span>
+                </div>
+            </div>
+            <div class="contract-card">
+                <div class="contract-name">EventBus.sol</div>
+                <h3>Event Streaming</h3>
+                <p>On-chain event bus for cross-contract communication. Subscribe to events, filter by type, replay historical events for sync.</p>
+                <div class="contract-meta">
+                    <span class="contract-tag">Pub/Sub</span>
+                    <span class="contract-tag">Replay</span>
+                    <span class="contract-tag">Filters</span>
+                </div>
+            </div>
+            <div class="contract-card">
+                <div class="contract-name">UpgradeProxy.sol</div>
+                <h3>Upgrade Infrastructure</h3>
+                <p>Transparent proxy pattern for zero-downtime upgrades. Storage layout verification. Automatic rollback on failed upgrades.</p>
+                <div class="contract-meta">
+                    <span class="contract-tag">UUPS</span>
+                    <span class="contract-tag">Storage Check</span>
+                    <span class="contract-tag">Rollback</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="gradient-line">
+
+    <!-- Consent Management Deep Dive -->
+    <section id="consent">
+        <div class="section-label">Consent Infrastructure</div>
+        <h2 class="section-title">Consent That <span class="gradient-text">Actually Works</span></h2>
+        <p class="section-description">Cookie banners are theater. RoadChain consent is cryptographically verifiable, user-controlled, and legally admissible.</p>
+        <div class="consent-grid">
+            <div class="consent-card">
+                <div class="consent-step gradient-text">01</div>
+                <h3>User Grants Consent</h3>
+                <p>The data subject signs a consent transaction specifying the data controller, processing purpose, and duration. The transaction is mined into a block with a verifiable timestamp.</p>
+            </div>
+            <div class="consent-card">
+                <div class="consent-step gradient-text">02</div>
+                <h3>Controller Verifies</h3>
+                <p>Before processing data, the controller queries the ConsentManager contract. The contract returns a boolean &mdash; valid or not. No ambiguity, no interpretation required.</p>
+            </div>
+            <div class="consent-card">
+                <div class="consent-step gradient-text">03</div>
+                <h3>Subject Revokes Anytime</h3>
+                <p>The data subject can revoke consent with a single transaction. Revocation is instant, immutable, and emits an event that all listening controllers receive in real time.</p>
+            </div>
+        </div>
+    </section>
+
+    <hr class="gradient-line">
+
+    <!-- Zero Knowledge Proofs -->
+    <section id="zkp">
+        <div class="section-label">Privacy Layer</div>
+        <h2 class="section-title">Prove Without <span class="gradient-text">Revealing</span></h2>
+        <div class="zkp-container">
+            <div class="zkp-visual">
+                <div class="zkp-flow">
+                    <div class="zkp-node">Prover has secret data</div>
+                    <div class="zkp-arrow">&darr;</div>
+                    <div class="zkp-node">Generates ZK circuit proof</div>
+                    <div class="zkp-arrow">&darr;</div>
+                    <div class="zkp-node zkp-node-active">Proof submitted on-chain</div>
+                    <div class="zkp-arrow">&darr;</div>
+                    <div class="zkp-node">ZKVerifier.sol validates</div>
+                    <div class="zkp-arrow">&darr;</div>
+                    <div class="zkp-node">Statement verified &mdash; no data exposed</div>
+                </div>
+            </div>
+            <div class="zkp-content">
+                <h3>Zero-Knowledge Proofs for Real-World Verification</h3>
+                <p>RoadChain integrates Circom circuits with on-chain Groth16 and PLONK verifiers. Prove properties about private data without exposing any of it. The verifier learns only that the statement is true.</p>
+                <ul class="zkp-features">
+                    <li>Age verification without revealing birthdate</li>
+                    <li>Balance verification without revealing amount</li>
+                    <li>Membership proof without identity disclosure</li>
+                    <li>Location proof without exact coordinates</li>
+                    <li>Credential verification without credential data</li>
+                    <li>Compliance proof without business details</li>
+                    <li>Transaction verification without counterparty exposure</li>
+                    <li>Document authenticity without document content</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <hr class="gradient-line">
+
+    <!-- Audit Trail -->
+    <section id="audit">
+        <div class="section-label">Immutable Records</div>
+        <h2 class="section-title">Every Action, <span class="gradient-text">Permanently Recorded</span></h2>
+        <p class="section-description">RoadChain audit trails are append-only, Merkle-linked, and cryptographically tamper-evident. If it happened, there is proof.</p>
+        <div class="audit-timeline">
+            <div class="audit-entry">
+                <div class="audit-timestamp">2026-03-21 14:32:07 UTC | Block #1,847,293</div>
+                <div class="audit-action">Consent Granted</div>
+                <div class="audit-detail">Subject 0xA4c2...8F3d granted data processing consent to Controller 0x7B1e...2C9a for purpose: analytics. Duration: 365 days.</div>
+                <div class="audit-hash">tx: 0x8a7f3c1d9e2b4a6f8c0d1e3f5a7b9c2d4e6f8a0b1c3d5e7f9a2b4c6d8e0f1a</div>
+            </div>
+            <div class="audit-entry">
+                <div class="audit-timestamp">2026-03-21 14:32:09 UTC | Block #1,847,294</div>
+                <div class="audit-action">Document Registered</div>
+                <div class="audit-detail">Document hash registered by 0x3D5f...1A2b. SHA-256: e3b0c44298fc1c149afbf4c8996fb924. IPFS CID: QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG.</div>
+                <div class="audit-hash">tx: 0x1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b</div>
+            </div>
+            <div class="audit-entry">
+                <div class="audit-timestamp">2026-03-21 14:32:11 UTC | Block #1,847,295</div>
+                <div class="audit-action">ZK Proof Verified</div>
+                <div class="audit-detail">Groth16 proof verified for circuit: age_above_18. Verifier: 0x9C4e...7D1f. Result: VALID. Zero data exposed.</div>
+                <div class="audit-hash">tx: 0x2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c</div>
+            </div>
+            <div class="audit-entry">
+                <div class="audit-timestamp">2026-03-21 14:32:13 UTC | Block #1,847,296</div>
+                <div class="audit-action">Compliance Check Passed</div>
+                <div class="audit-detail">KYC verification completed for 0xB5a1...4E2c. Jurisdiction: US. Risk level: LOW. Compliance gate: APPROVED.</div>
+                <div class="audit-hash">tx: 0x3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d</div>
+            </div>
+            <div class="audit-entry">
+                <div class="audit-timestamp">2026-03-21 14:32:15 UTC | Block #1,847,297</div>
+                <div class="audit-action">Consent Revoked</div>
+                <div class="audit-detail">Subject 0xA4c2...8F3d revoked consent ID: 0x8a7f...1a. All controllers notified via EventBus. Data processing must cease immediately.</div>
+                <div class="audit-hash">tx: 0x4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e</div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="gradient-line">
+
+    <!-- Compliance -->
+    <section id="compliance">
+        <div class="section-label">Regulatory Framework</div>
+        <h2 class="section-title">Compliance <span class="gradient-text">by Design</span></h2>
+        <p class="section-description">RoadChain is built for regulated industries. Every feature considers GDPR, CCPA, HIPAA, SOX, and SOC 2 requirements from the ground up.</p>
+        <div class="compliance-grid">
+            <div class="compliance-card">
+                <div class="compliance-icon">&#x1F1EA;&#x1F1FA;</div>
+                <h3>GDPR</h3>
+                <p>Right to erasure via consent revocation. Data minimization through ZK proofs. Lawful basis recorded on-chain. Data portability via standard export.</p>
+                <div class="compliance-badge">COMPLIANT</div>
+            </div>
+            <div class="compliance-card">
+                <div class="compliance-icon">&#x1F1FA;&#x1F1F8;</div>
+                <h3>CCPA / CPRA</h3>
+                <p>Consumer opt-out rights enforced by smart contract. Sale/sharing tracking with immutable audit. Automated compliance reporting.</p>
+                <div class="compliance-badge">COMPLIANT</div>
+            </div>
+            <div class="compliance-card">
+                <div class="compliance-icon">&#x1F3E5;</div>
+                <h3>HIPAA</h3>
+                <p>Protected health information never touches the chain. ZK proofs verify eligibility without exposing PHI. BAA-compatible architecture.</p>
+                <div class="compliance-badge">COMPATIBLE</div>
+            </div>
+            <div class="compliance-card">
+                <div class="compliance-icon">&#x1F4CA;</div>
+                <h3>SOX</h3>
+                <p>Financial audit trails with cryptographic integrity. Segregation of duties enforced by smart contract roles. Tamper-evident record keeping.</p>
+                <div class="compliance-badge">COMPLIANT</div>
+            </div>
+            <div class="compliance-card">
+                <div class="compliance-icon">&#x1F6E1;</div>
+                <h3>SOC 2 Type II</h3>
+                <p>Continuous monitoring via on-chain events. Access control audit trails. Encryption at rest and in transit. Incident response via EventBus.</p>
+                <div class="compliance-badge">IN PROGRESS</div>
+            </div>
+            <div class="compliance-card">
+                <div class="compliance-icon">&#x1F512;</div>
+                <h3>ISO 27001</h3>
+                <p>Information security management aligned with ISO 27001 controls. Risk assessment, access management, and incident handling all on-chain.</p>
+                <div class="compliance-badge">ALIGNED</div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="gradient-line">
+
+    <!-- Network Stats -->
+    <section id="network">
+        <div class="section-label">Network</div>
+        <h2 class="section-title">RoadChain <span class="gradient-text">Network Status</span></h2>
+        <div class="network-stats">
+            <div class="net-stat">
+                <div class="net-stat-value gradient-text">5</div>
+                <div class="net-stat-label">Validator Nodes</div>
+            </div>
+            <div class="net-stat">
+                <div class="net-stat-value gradient-text">2s</div>
+                <div class="net-stat-label">Block Time</div>
+            </div>
+            <div class="net-stat">
+                <div class="net-stat-value gradient-text">0</div>
+                <div class="net-stat-label">Gas Fees</div>
+            </div>
+            <div class="net-stat">
+                <div class="net-stat-value gradient-text">99.97%</div>
+                <div class="net-stat-label">Uptime</div>
+            </div>
+        </div>
+
+        <!-- JSON-RPC Example -->
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+                <span style="margin-left: 0.5rem;">Connect to RoadChain</span>
+            </div>
+            <div class="code-body">
+<pre><span class="comment"># Connect via JSON-RPC</span>
+curl -X POST http://localhost:<span class="number">8545</span> \
+  -H <span class="string">"Content-Type: application/json"</span> \
+  -d <span class="string">'{
+    "jsonrpc": "2.0",
+    "method": "eth_blockNumber",
+    "params": [],
+    "id": 1
+  }'</span>
+
+<span class="comment"># Using ethers.js</span>
+<span class="keyword">import</span> { JsonRpcProvider } <span class="keyword">from</span> <span class="string">"ethers"</span>;
+
+<span class="keyword">const</span> provider = <span class="keyword">new</span> <span class="function">JsonRpcProvider</span>(<span class="string">"http://localhost:8545"</span>);
+<span class="keyword">const</span> block = <span class="keyword">await</span> provider.<span class="function">getBlockNumber</span>();
+console.<span class="function">log</span>(<span class="string">`Current block: ${block}`</span>);
+
+<span class="comment"># Using web3.py</span>
+<span class="keyword">from</span> web3 <span class="keyword">import</span> Web3
+
+w3 = Web3(Web3.HTTPProvider(<span class="string">"http://localhost:8545"</span>))
+<span class="keyword">assert</span> w3.is_connected()
+print(<span class="string">f"Block: {w3.eth.block_number}"</span>)</pre>
+            </div>
+        </div>
+    </section>
+
+    <hr class="gradient-line">
+
+    <!-- API Reference -->
+    <section id="api">
+        <div class="section-label">Developer Interface</div>
+        <h2 class="section-title">RoadChain <span class="gradient-text">REST Endpoints</span></h2>
+        <p class="section-description">In addition to standard JSON-RPC, RoadChain exposes a REST interface for common verification operations.</p>
+        <div class="api-grid">
+            <div class="api-card">
+                <div>
+                    <span class="api-method api-post">POST</span>
+                    <span class="api-endpoint">/api/v1/consent/grant</span>
+                </div>
+                <div class="api-desc">Grant consent from a data subject to a controller for a specific purpose and duration.</div>
+            </div>
+            <div class="api-card">
+                <div>
+                    <span class="api-method api-post">POST</span>
+                    <span class="api-endpoint">/api/v1/consent/revoke</span>
+                </div>
+                <div class="api-desc">Revoke a previously granted consent. Immediate effect, all controllers notified.</div>
+            </div>
+            <div class="api-card">
+                <div>
+                    <span class="api-method api-get">GET</span>
+                    <span class="api-endpoint">/api/v1/consent/:id/status</span>
+                </div>
+                <div class="api-desc">Check if a consent record is currently valid. Returns boolean with metadata.</div>
+            </div>
+            <div class="api-card">
+                <div>
+                    <span class="api-method api-post">POST</span>
+                    <span class="api-endpoint">/api/v1/audit/log</span>
+                </div>
+                <div class="api-desc">Append an audit entry to the immutable trail. Returns block number and tx hash.</div>
+            </div>
+            <div class="api-card">
+                <div>
+                    <span class="api-method api-get">GET</span>
+                    <span class="api-endpoint">/api/v1/audit/:entity/trail</span>
+                </div>
+                <div class="api-desc">Retrieve the complete audit trail for an entity. Paginated, with Merkle proof per entry.</div>
+            </div>
+            <div class="api-card">
+                <div>
+                    <span class="api-method api-post">POST</span>
+                    <span class="api-endpoint">/api/v1/zkp/verify</span>
+                </div>
+                <div class="api-desc">Submit a zero-knowledge proof for on-chain verification. Supports Groth16 and PLONK.</div>
+            </div>
+            <div class="api-card">
+                <div>
+                    <span class="api-method api-post">POST</span>
+                    <span class="api-endpoint">/api/v1/document/register</span>
+                </div>
+                <div class="api-desc">Register a document hash on-chain. Optionally include IPFS CID for decentralized storage.</div>
+            </div>
+            <div class="api-card">
+                <div>
+                    <span class="api-method api-get">GET</span>
+                    <span class="api-endpoint">/api/v1/document/:hash/verify</span>
+                </div>
+                <div class="api-desc">Verify a document hash exists on-chain. Returns registration timestamp and registrant.</div>
+            </div>
+            <div class="api-card">
+                <div>
+                    <span class="api-method api-get">GET</span>
+                    <span class="api-endpoint">/api/v1/identity/:did/claims</span>
+                </div>
+                <div class="api-desc">Retrieve verifiable claims for a DID. Returns claim types without underlying data.</div>
+            </div>
+            <div class="api-card">
+                <div>
+                    <span class="api-method api-post">POST</span>
+                    <span class="api-endpoint">/api/v1/compliance/check</span>
+                </div>
+                <div class="api-desc">Run a compliance check against configured rules. Returns pass/fail with detailed reasoning.</div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="gradient-line">
+
+    <!-- Integrations -->
+    <section>
+        <div class="section-label">Ecosystem</div>
+        <h2 class="section-title" style="text-align:center;">Works With <span class="gradient-text">Everything</span></h2>
+        <div class="integration-logos">
+            <div class="integration-logo">Ethereum</div>
+            <div class="integration-logo">Hardhat</div>
+            <div class="integration-logo">Foundry</div>
+            <div class="integration-logo">OpenZeppelin</div>
+            <div class="integration-logo">ethers.js</div>
+            <div class="integration-logo">web3.py</div>
+            <div class="integration-logo">MetaMask</div>
+            <div class="integration-logo">Circom</div>
+            <div class="integration-logo">snarkjs</div>
+            <div class="integration-logo">IPFS</div>
+            <div class="integration-logo">PostgreSQL</div>
+            <div class="integration-logo">WireGuard</div>
+        </div>
+    </section>
+
+    <hr class="gradient-line">
+
+    <!-- Pricing -->
+    <section id="pricing">
+        <div class="section-label">Plans</div>
+        <h2 class="section-title" style="text-align:center;">Verification for <span class="gradient-text">Every Scale</span></h2>
+        <p class="section-description" style="text-align:center;margin:0 auto 3rem;">No gas fees. No token purchases. Transparent pricing based on verification volume.</p>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <div class="pricing-tier">Developer</div>
+                <div class="pricing-price">Free</div>
+                <div class="pricing-period">For experimentation and prototyping</div>
+                <ul class="pricing-features">
+                    <li>1 validator node</li>
+                    <li>1,000 verifications/month</li>
+                    <li>All 12 smart contracts</li>
+                    <li>JSON-RPC + REST access</li>
+                    <li>Community support</li>
+                </ul>
+                <button class="pricing-btn pricing-btn-secondary">Start Free</button>
+            </div>
+            <div class="pricing-card featured">
+                <div class="pricing-tier">Business</div>
+                <div class="pricing-price">$199<span style="font-size:1rem;font-weight:400">/mo</span></div>
+                <div class="pricing-period">For production verification workloads</div>
+                <ul class="pricing-features">
+                    <li>3 validator nodes</li>
+                    <li>100,000 verifications/month</li>
+                    <li>Zero-knowledge proof engine</li>
+                    <li>Compliance reporting</li>
+                    <li>WebSocket event streaming</li>
+                    <li>Priority support</li>
+                </ul>
+                <button class="pricing-btn pricing-btn-primary">Get Started</button>
+            </div>
+            <div class="pricing-card">
+                <div class="pricing-tier">Enterprise</div>
+                <div class="pricing-price">Custom</div>
+                <div class="pricing-period">For regulated industries at scale</div>
+                <ul class="pricing-features">
+                    <li>Unlimited validator nodes</li>
+                    <li>Unlimited verifications</li>
+                    <li>Private network deployment</li>
+                    <li>Custom smart contracts</li>
+                    <li>SOC 2 + HIPAA support</li>
+                    <li>Dedicated support engineer</li>
+                    <li>SLA guarantee</li>
+                </ul>
+                <button class="pricing-btn pricing-btn-secondary">Contact Sales</button>
+            </div>
+        </div>
+    </section>
+
+    <hr class="gradient-line">
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <h2><span class="gradient-text">Start Verifying Today</span></h2>
+        <p>Deploy a RoadChain node in minutes. No tokens to buy, no wallets to fund, no speculation required.</p>
+        <div class="hero-actions" style="justify-content:center;">
+            <button class="btn-primary">Deploy a Node</button>
+            <button class="btn-secondary">Read the Docs</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div>
+                <div class="footer-brand"><span class="gradient-text">RoadChain</span></div>
+                <p class="footer-brand-desc">Verification infrastructure by BlackRoad OS, Inc. Ethereum-based smart contracts for consent, audit, identity, and compliance. Sovereign deployment. Zero speculation.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#contracts">Smart Contracts</a></li>
+                    <li><a href="#zkp">Zero-Knowledge</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Developers</h4>
+                <ul>
+                    <li><a href="#api">API Reference</a></li>
+                    <li><a href="#architecture">Architecture</a></li>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">GitHub</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="https://blackroad.io">BlackRoad OS</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2026 BlackRoad OS, Inc. All rights reserved.</span>
+            <div class="footer-bottom-links">
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Security</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
