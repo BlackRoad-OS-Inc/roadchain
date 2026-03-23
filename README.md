@@ -1,3 +1,11 @@
+# roadchain
+
+> RoadChain — Layer-1 blockchain from scratch in Python. secp256k1 ECDSA, SHA-256 proof-of-work, Merkle trees, Bitcoin-compatible headers, wallet CLI. Educational + production-ready. (BlackRoad integration)
+
+Part of the [BlackRoad OS](https://blackroad.io) ecosystem — [BlackRoad-OS-Inc](https://github.com/BlackRoad-OS-Inc)
+
+---
+
 # RoadChain
 
 Layer-1 blockchain built from scratch in Python. Real cryptography, real consensus, real blocks.
